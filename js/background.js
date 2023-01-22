@@ -16,25 +16,14 @@ async function onRequest(request, sender, callback)
 {
 	if (request.action == "GET")
 	{
-		var server_response = await Get(request.url);
-		var tabs = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-		chrome.tabs.sendMessage(tabs[0].id, { "action": "ServerResponse", "response": server_response }, function(response) {});
-		var response = await chrome.tabs.sendMessage(tab.id,
+		Get(request.url)
+		.then(function(response)
 		{
-			"action": "ServerResponse",
-			"response":server_response
-		}, function() {});
-	}
-	else if (request.action == "GetMainScript")
-	{
-		var server_response = await Get(request.url);
-		var tabs = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-		chrome.tabs.sendMessage(tabs[0].id, { "action": "ServerResponse", "response": server_response }, function(response) {});
-		var response = await chrome.tabs.sendMessage(tab.id,
-		{
-			"action": "MainScriptRecieved",
-			"response":server_response
-		}, function() {});
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
+			{
+				chrome.tabs.sendMessage(tabs[0].id, { "action": "ResponseReceived", "response": response }, function(response) {});
+			});
+		});
 	}
 };
 
