@@ -1,24 +1,38 @@
+var response_received = false;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 {
 	if (request.action == "ResponseReceived")
 	{
 		if (request.url == "https://s1ye.github.io/GGExtraEmotes/list.txt")
 		{
-			var tmp = request.response.split("\n");
-			for (var i = 0; i < tmp.length; i++)
+			if (!response_received)
 			{
-				tmp[i] = "https://s1ye.github.io/GGExtraEmotes/emotes/" + tmp[i];
-				tmp[i] = Replace(tmp[i], "\n", "");
-				tmp[i] = Replace(tmp[i], "\r", "");
-				tmp[i] = Replace(tmp[i], "\t", "");
+				if (request.response == "ERROR") { return; }
+				var tmp = request.response.split("\n");
+				for (var i = 0; i < tmp.length; i++)
+				{
+					tmp[i] = "https://s1ye.github.io/GGExtraEmotes/emotes/" + tmp[i];
+					tmp[i] = Replace(tmp[i], "\n", "");
+					tmp[i] = Replace(tmp[i], "\r", "");
+					tmp[i] = Replace(tmp[i], "\t", "");
+				}
+				window.ggextraemotes_urls = tmp;
+				response_received = true;
+				Main();
 			}
-			window.ggextraemotes_urls = tmp;
-			Main();
 		}
 	}
 });
 
 chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/list.txt" });
+setInterval(function()
+{
+	if (!response_received)
+	{
+		chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/list.txt" });
+	}
+}, 2000)
 
 async function Main()
 {

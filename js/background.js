@@ -8,7 +8,7 @@ async function Get(url)
 	}
 	catch(e)
 	{
-		return "Error";
+		return "ERROR";
 	}
 };
 
