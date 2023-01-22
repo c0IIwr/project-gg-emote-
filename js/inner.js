@@ -12,7 +12,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 				tmp[i] = Replace(tmp[i], "\r", "");
 				tmp[i] = Replace(tmp[i], "\t", "");
 			}
-			window.ggextraemotes_urls = tmp;		
+			window.ggextraemotes_urls = tmp;
+			console.log("[GGExtraEmotes] Получены ggextraemotes_urls: " + window.ggextraemotes_urls);	
 			Main();
 		}
 	}
