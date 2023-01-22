@@ -1,6 +1,4 @@
 SCAMMED.gif
-FeelsRainMan.gif
-peepoRIP.gif
 gameplay.gif
 Lighter.gif
 catJAM.gif
@@ -19,6 +17,8 @@ niatepEyes.gif
 ResidentSleeper.png
 Prayge.png
 Em.png
+peepoRIP.gif
+FeelsRainMan.gif
 PoroSad.png
 BibleThumb.png
 cmonBruh.png
