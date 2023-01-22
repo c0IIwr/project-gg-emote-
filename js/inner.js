@@ -1,4 +1,4 @@
-var response_received = false;
+var ggextraemotes_urls_received = false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 {
@@ -6,21 +6,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 	{
 		if (request.url == "https://s1ye.github.io/GGExtraEmotes/list.txt")
 		{
-			if (!response_received)
+			if (ggextraemotes_urls_received) { return; }
+			if (request.response == "ERROR") { return; }
+			var tmp = request.response.split("\n");
+			for (var i = 0; i < tmp.length; i++)
 			{
-				if (request.response == "ERROR") { return; }
-				var tmp = request.response.split("\n");
-				for (var i = 0; i < tmp.length; i++)
-				{
-					tmp[i] = "https://s1ye.github.io/GGExtraEmotes/emotes/" + tmp[i];
-					tmp[i] = Replace(tmp[i], "\n", "");
-					tmp[i] = Replace(tmp[i], "\r", "");
-					tmp[i] = Replace(tmp[i], "\t", "");
-				}
-				window.ggextraemotes_urls = tmp;
-				response_received = true;
-				Main();
+				tmp[i] = "https://s1ye.github.io/GGExtraEmotes/emotes/" + tmp[i];
+				tmp[i] = Replace(tmp[i], "\n", "");
+				tmp[i] = Replace(tmp[i], "\r", "");
+				tmp[i] = Replace(tmp[i], "\t", "");
 			}
+			window.ggextraemotes_urls = tmp;
+			ggextraemotes_urls_received = true;
+			Main();
 		}
 	}
 });
@@ -28,17 +26,33 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/list.txt" });
 setInterval(function()
 {
-	if (!response_received)
-	{
-		chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/list.txt" });
-	}
-}, 2000)
+	if (ggextraemotes_urls_received) { return; }
+	chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/list.txt" });
+}, 2000);
 
 async function Main()
 {
 	AsyncAddNickClickEvent();
 	AsyncAddCustomInput();
 	AsyncAddEmojis();
+}
+
+async function AsyncAddNickClickEvent()
+{
+	await AddNickClickEvent();
+	setTimeout(AsyncAddNickClickEvent, 500);
+}
+
+async function AsyncAddCustomInput()
+{
+	await AddCustomInput();
+	setTimeout(AsyncAddCustomInput, 500);
+}
+
+async function AsyncAddEmojis()
+{
+	await AddEmojis();
+	setTimeout(AsyncAddEmojis, 500);
 }
 
 async function AddNickClickEvent()
@@ -59,24 +73,6 @@ async function AddNickClickEvent()
 			}.bind(nickname);
 		}
 	}
-}
-
-async function AsyncAddNickClickEvent()
-{
-	await AddNickClickEvent();
-	setTimeout(AsyncAddNickClickEvent, 500);
-}
-
-async function AsyncAddCustomInput()
-{
-	await AddCustomInput();
-	setTimeout(AsyncAddCustomInput, 500);
-}
-
-async function AsyncAddEmojis()
-{
-	await AddEmojis();
-	setTimeout(AsyncAddEmojis, 500);
 }
 
 async function AddCustomInput()
