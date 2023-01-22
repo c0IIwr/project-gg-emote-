@@ -1,5 +1,6 @@
 # GGExtraEmotes  
 Расширение для Google Chrome. Добавляет более 50 эмодзи для <a href=https://goodgame.ru/>goodgame.ru</a>  
+<img src="https://i.ibb.co/McRfzr4/image.png">
 
 ## Установка  
 1. <a href="https://github.com/S1ye/GGExtraEmotes/archive/refs/heads/main.zip">Скачайте архив с расширением</a> и распакуйте
