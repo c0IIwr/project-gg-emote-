@@ -3,7 +3,6 @@ FeelsRainMan.gif
 peepoRIP.gif
 gameplay.gif
 Lighter.gif
-Chiller.gif
 catJAM.gif
 ChadKachnulo.gif
 BANGER.gif
@@ -11,6 +10,7 @@ wideVIBE.gif
 peepoDJ.gif
 Listening.gif
 muted.gif
+Chiller.gif
 YourBunnyDance.gif
 niatepDance.gif
 niatepKiss.gif
