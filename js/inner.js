@@ -2,12 +2,23 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 {
 	if (request.action == "ResponseReceived")
 	{
-		window.ggextraemotes_urls = request.response.split("\n");
-		Main();
+		if (request.url == "https://s1ye.github.io/GGExtraEmotes/list.txt")
+		{
+			var tmp = request.response.split("\n");
+			for (var i = 0; i < tmp.length; i++)
+			{
+				tmp[i] = "https://s1ye.github.io/GGExtraEmotes/emotes/" + tmp[i];
+				tmp[i] = Replace(tmp[i], "\n", "");
+				tmp[i] = Replace(tmp[i], "\r", "");
+				tmp[i] = Replace(tmp[i], "\t", "");
+			}
+			window.ggextraemotes_urls = tmp;		
+			Main();
+		}
 	}
 });
 
-chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/emotes/list.txt" });
+chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExtraEmotes/list.txt" });
 
 async function Main()
 {
@@ -29,7 +40,8 @@ async function InitOnNicknameClickEvent()
 			if (element.className.indexOf("user") == 0)
 			{
 				var nickname = Replace(element.innerText, " ", "");
-				element.onclick = function()
+				var nick = element.getElementsByClassName("nick")[0];
+				nick.onclick = function()
 				{
 					var custom_input = document.getElementById("ggextraemotes_msg_input");
 					custom_input.innerHTML += "&nbsp;" + this + ',&nbsp;';
@@ -61,9 +73,13 @@ async function AddCustomInput()
 			msg = Replace(msg, "</div>", "");
 			msg = Replace(msg, "<br>", "");
 			msg = Replace(msg, "&nbsp;", "");
+			msg = Replace(msg, "\n", "");
+			msg = Replace(msg, "\r", "");
+			msg = Replace(msg, "\t", "");
 			for (var i = 0; i < ggextraemotes_urls.length; i++)
 			{
-				msg = Replace(msg, '<img class="ggextraemote_in_input" src="' + ggextraemotes_urls[i] + '">', ' ' + ggextraemotes_urls[i] + ' ');
+				var replace = '<img class="ggextraemote_in_input" src="' + ggextraemotes_urls[i] + '">';
+				msg = Replace(msg, replace, ' ' + ggextraemotes_urls[i] + ' ');
 			}
 			var emotes = msg.split("<divforemote");
 			for (var i = 1; i < emotes.length; i++)
@@ -79,6 +95,7 @@ async function AddCustomInput()
 					msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", "");
 				}
 			}
+			console.log(msg);
 			textarea.innerText = msg;
 			var event = new KeyboardEvent("keypress",
 			{
@@ -146,11 +163,12 @@ async function WaitElementByXPath(xpath)
 
 function Replace(str, a, b)
 {
-	while (str.indexOf(a) > -1)
+	var ret = str;
+	while (ret.indexOf(a) > -1)
 	{
-		str = str.replace(a, b);
+		ret = ret.replace(a, b);
 	}
-	return str;
+	return ret;
 }
 
 function IsElement(obj)

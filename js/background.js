@@ -21,7 +21,7 @@ async function onRequest(request, sender, callback)
 		{
 			chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
 			{
-				chrome.tabs.sendMessage(tabs[0].id, { "action": "ResponseReceived", "response": response }, function(response) {});
+				chrome.tabs.sendMessage(tabs[0].id, { "action": "ResponseReceived", "url":request.url, "response": response }, function(response) {});
 			});
 		});
 	}
