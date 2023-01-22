@@ -13,7 +13,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 				tmp[i] = Replace(tmp[i], "\t", "");
 			}
 			window.ggextraemotes_urls = tmp;
-			console.log("[GGExtraEmotes] Получены ggextraemotes_urls: " + window.ggextraemotes_urls);	
 			Main();
 		}
 	}
@@ -109,7 +108,6 @@ async function AddCustomInput()
 						msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", "");
 					}
 				}
-				console.log(msg);
 				textarea.innerText = msg;
 				var event = new KeyboardEvent("keypress",
 				{
@@ -123,8 +121,6 @@ async function AddCustomInput()
 			}
 		}
 		text_block.prepend(ggextraemotes_msg_input);
-
-
 		var observer = new MutationObserver(function(mutations)
 		{
 			for (var i = 0; i < mutations.length; i++)
@@ -201,20 +197,3 @@ function IsElement(obj)
 		return false;
 	}
 }
-
-/*function AddEmojisButton()
-{
-	var chat_control_block = document.getElementsByClassName("chat-control-block")[0];
-	var control_wrapper = chat_control_block.getElementsByClassName("control__wrapper")[0];
-
-	var emoji_btn = document.createElement("div");
-
-	emoji_btn.id = "emoji_btn_84256"
-	emoji_btn.className = "vertical_align";
-	emoji_btn.innerText = "😉"
-	emoji_btn.addEventListener("click", function()
-	{
-		alert("click");
-	});
-	control_wrapper.append(emoji_btn);
-}*/
