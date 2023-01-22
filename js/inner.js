@@ -22,125 +22,143 @@ chrome.runtime.sendMessage({ "action":"GET", "url":"https://s1ye.github.io/GGExt
 
 async function Main()
 {
-	await InitOnNicknameClickEvent();
-	await AddCustomInput();
-	await AddEmojis();
+	AsyncAddNickClickEvent();
+	AsyncAddCustomInput();
+	AsyncAddEmojis();
 }
 
-async function InitOnNicknameClickEvent()
+async function AddNickClickEvent()
 {
+	await WaitElementByXPath('//div[@class="tse-content"]//chat-user');
 	var chat_section = await WaitElementByXPath('//div[@class="tse-content"]');
-	var observer = new MutationObserver(function(mutations)
+	var chat_users = chat_section.getElementsByTagName("chat-user");
+	for (var i = 0; i < chat_users.length; i++)
 	{
-		for (var i = 0; i < mutations.length; i++)
+		if (!chat_users[i].getAttribute("ggextraemotes_has_event"))
 		{
-			var element = mutations[i].addedNodes[0];
-			if (!element) { continue; }
-			if (!IsElement(element)) { continue; }
-			if (element.className.indexOf("user") == 0)
+			chat_users[i].setAttribute("ggextraemotes_has_event", true);
+			var nickname = Replace(chat_users[i].innerText, " ", "");
+			chat_users[i].onclick = function()
 			{
-				var nickname = Replace(element.innerText, " ", "");
-				var nick = element.getElementsByClassName("nick")[0];
-				nick.onclick = function()
-				{
-					var custom_input = document.getElementById("ggextraemotes_msg_input");
-					custom_input.innerHTML += "&nbsp;" + this + ',&nbsp;';
-				}.bind(nickname);
-			}
+				var custom_input = document.getElementById("ggextraemotes_msg_input");
+				custom_input.innerHTML += "&nbsp;" + this + ',&nbsp;';
+			}.bind(nickname);
 		}
-	});
-	observer.observe(chat_section, { childList: true, subtree: true });
+	}
+}
+
+async function AsyncAddNickClickEvent()
+{
+	await AddNickClickEvent();
+	setTimeout(AsyncAddNickClickEvent, 500);
+}
+
+async function AsyncAddCustomInput()
+{
+	await AddCustomInput();
+	setTimeout(AsyncAddCustomInput, 500);
+}
+
+async function AsyncAddEmojis()
+{
+	await AddEmojis();
+	setTimeout(AsyncAddEmojis, 500);
 }
 
 async function AddCustomInput()
 {
-	var chat_control_block = await WaitElementByXPath('//div[@class="chat-control-block"]');
-	var text_block = await WaitElementByXPath('//div[@class="chat-control-block"]//div[@class="text-block ng-scope"]');
-	var textarea = chat_control_block.getElementsByClassName("textarea")[0];
-	textarea.style = "display: none";
-
-	var ggextraemotes_msg_input = document.createElement("div");
-	ggextraemotes_msg_input.id = "ggextraemotes_msg_input";
-	ggextraemotes_msg_input.className = "textarea";
-	ggextraemotes_msg_input.setAttribute("contenteditable", true);
-	ggextraemotes_msg_input.setAttribute("placeholder", "Написать сообщение...");
-	ggextraemotes_msg_input.onkeyup = function(event)
+	if (!document.getElementById("ggextraemotes_msg_input"))
 	{
-		if (event.keyCode == 13)
+		var text_block = await WaitElementByXPath('//div[@class="chat-control-block"]//div[@class="text-block ng-scope"]');
+		var textarea = await WaitElementByXPath('//div[@class="chat-control-block"]//div[@class="textarea"]');
+		textarea.style = "display: none";
+		var ggextraemotes_msg_input = document.createElement("div");
+		ggextraemotes_msg_input.id = "ggextraemotes_msg_input";
+		ggextraemotes_msg_input.className = "textarea";
+		ggextraemotes_msg_input.setAttribute("contenteditable", true);
+		ggextraemotes_msg_input.setAttribute("placeholder", "Написать сообщение...");
+		ggextraemotes_msg_input.onkeyup = function(event)
 		{
-			var msg = ggextraemotes_msg_input.innerHTML;
-			msg = Replace(msg, "<div>", "");
-			msg = Replace(msg, "</div>", "");
-			msg = Replace(msg, "<br>", "");
-			msg = Replace(msg, "&nbsp;", "");
-			msg = Replace(msg, "\n", "");
-			msg = Replace(msg, "\r", "");
-			msg = Replace(msg, "\t", "");
-			for (var i = 0; i < ggextraemotes_urls.length; i++)
+			if (event.keyCode == 13)
 			{
-				var replace = '<img class="ggextraemote_in_input" src="' + ggextraemotes_urls[i] + '">';
-				msg = Replace(msg, replace, ' ' + ggextraemotes_urls[i] + ' ');
-			}
-			var emotes = msg.split("<divforemote");
-			for (var i = 1; i < emotes.length; i++)
-			{
-				var inner_emote = emotes[i].split("</divforemote>")[0];
-				try
+				var msg = ggextraemotes_msg_input.innerHTML;
+				msg = Replace(msg, "<div>", "");
+				msg = Replace(msg, "</div>", "");
+				msg = Replace(msg, "<br>", "");
+				msg = Replace(msg, "&nbsp;", "");
+				msg = Replace(msg, "\n", "");
+				msg = Replace(msg, "\r", "");
+				msg = Replace(msg, "\t", "");
+				for (var i = 0; i < ggextraemotes_urls.length; i++)
 				{
-					var name = inner_emote.split('tooltip="')[1].split('"')[0];
-					msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", " " + name + " ");
+					var replace = '<img class="ggextraemote_in_input" src="' + ggextraemotes_urls[i] + '">';
+					msg = Replace(msg, replace, ' ' + ggextraemotes_urls[i] + ' ');
 				}
-				catch(e)
+				var emotes = msg.split("<divforemote");
+				for (var i = 1; i < emotes.length; i++)
 				{
-					msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", "");
+					var inner_emote = emotes[i].split("</divforemote>")[0];
+					try
+					{
+						var name = inner_emote.split('tooltip="')[1].split('"')[0];
+						msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", " " + name + " ");
+					}
+					catch(e)
+					{
+						msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", "");
+					}
 				}
+				console.log(msg);
+				textarea.innerText = msg;
+				var event = new KeyboardEvent("keypress",
+				{
+					keyCode: 13,
+					bubbles: false,
+					cancelable: false
+				});
+				textarea.dispatchEvent(event);
+				ggextraemotes_msg_input.innerHTML = "";
+				setTimeout(function() { ggextraemotes_msg_input.innerHTML = "" }, 100);
 			}
-			console.log(msg);
-			textarea.innerText = msg;
-			var event = new KeyboardEvent("keypress",
-			{
-				keyCode: 13,
-				bubbles: false,
-				cancelable: false
-			});
-			textarea.dispatchEvent(event);
-			ggextraemotes_msg_input.innerHTML = "";
-			setTimeout(function() { ggextraemotes_msg_input.innerHTML = "" }, 100);
 		}
+		text_block.prepend(ggextraemotes_msg_input);
+
+
+		var observer = new MutationObserver(function(mutations)
+		{
+			for (var i = 0; i < mutations.length; i++)
+			{
+				var smile_div = document.createElement("divforemote");
+				smile_div.setAttribute("contenteditable", false);
+				var element = mutations[i].addedNodes[0];
+				if (!element) { continue; }
+				if (!IsElement(element)) { continue; }
+				smile_div.append(element);
+				ggextraemotes_msg_input.append(smile_div);
+			}
+		});
+		observer.observe(textarea, { childList: true, subtree: true });
 	}
-	text_block.prepend(ggextraemotes_msg_input);
-
-
-	var observer = new MutationObserver(function(mutations)
-	{
-		for (var i = 0; i < mutations.length; i++)
-		{
-			var smile_div = document.createElement("divforemote");
-			smile_div.setAttribute("contenteditable", false);
-			var element = mutations[i].addedNodes[0];
-			if (!element) { continue; }
-			if (!IsElement(element)) { continue; }
-			smile_div.append(element);
-			ggextraemotes_msg_input.append(smile_div);
-		}
-	});
-	observer.observe(textarea, { childList: true, subtree: true });
 }
 
 async function AddEmojis()
 {
 	var smile_list = await WaitElementByXPath('//*[@id="smiles"]//div[@class="smile-list"]');
-	for (var i = 0; i < window.ggextraemotes_urls.length; i++)
+	var ggextraemotes = smile_list.getElementsByClassName("ggextraemote")[0];
+	if (!ggextraemotes)
 	{
-		var emoji = document.createElement("img");
-		emoji.src = window.ggextraemotes_urls[i]
-		emoji.className = "ggextraemote";
-		emoji.onclick = function()
+		for (var i = 0; i < window.ggextraemotes_urls.length; i++)
 		{
-			var custom_input = document.getElementById("ggextraemotes_msg_input");
-			custom_input.innerHTML += '<img class="ggextraemote_in_input" src="' + this + '">';
-		}.bind(window.ggextraemotes_urls[i]);
-		smile_list.prepend(emoji);
+			var emoji = document.createElement("img");
+			emoji.src = window.ggextraemotes_urls[i];
+			emoji.className = "ggextraemote";
+			emoji.onclick = function()
+			{
+				var custom_input = document.getElementById("ggextraemotes_msg_input");
+				custom_input.innerHTML += '<img class="ggextraemote_in_input" src="' + this + '">';
+			}.bind(window.ggextraemotes_urls[i]);
+			smile_list.prepend(emoji);
+		}
 	}
 }
 
