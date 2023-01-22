@@ -8,7 +8,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 		{
 			if (ggextraemotes_urls_received) { return; }
 			if (request.response == "ERROR") { return; }
+			if (request.length < 150) { return; }
 			var tmp = request.response.split("\n");
+			if (tmp.length < 30) { return; }
 			for (var i = 0; i < tmp.length; i++)
 			{
 				tmp[i] = "https://s1ye.github.io/GGExtraEmotes/emotes/" + tmp[i];
