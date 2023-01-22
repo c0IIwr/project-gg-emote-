@@ -1,6 +1,6 @@
 .ggextraemote
 {
-	padding: 5px;
+	padding: 7px;
 	cursor: pointer;
 }
 .ggextraemote:hover
@@ -10,11 +10,11 @@
 }
 divforemote img.smile
 {
-	margin-left: 5px;
-	margin-right: 5px; 
+	margin-left: 7px;
+	margin-right: 7px; 
 }
 .ggextraemote_in_input
 {
-	margin-left: 5px;
-	margin-right: 5px; 
+	margin-left: 7px;
+	margin-right: 7px; 
 }

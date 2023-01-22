@@ -2,7 +2,7 @@ async function Get(url)
 {
 	try
 	{
-		var response = await fetch(url);
+		var response = await fetch(url, {cache: "no-cache"});
 		var text = await response.text();
 		return text;
 	}
