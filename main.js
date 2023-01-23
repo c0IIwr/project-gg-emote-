@@ -1,6 +1,6 @@
 (async () =>
 {
-	window.extraemotes_urls = await GetEmotesList();
+	window.extraemotes_urls = await GetEmotesUrls();
 	Main();
 
 	async function Main()
@@ -159,17 +159,17 @@
 		return promise;
 	}
 
-	async function GetEmotesList()
+	async function GetEmotesUrls()
 	{
 		var EMOTES_LIST_URL = "https://s1ye.github.io/GGExtraEmotes/list.txt";
 		var EMOTES_URL = "https://s1ye.github.io/GGExtraEmotes/emotes/";
 		while(true)
 		{
-			var emotes_list = await Get(EMOTES_LIST_URL);
-			if (emotes_list.length < 150) { continue; }
-			if (request.response == "ERROR") { return; }
-			if (request.length < 150) { return; }
-			var tmp = emotes_list.split("\n");
+			var emotes_urls = await Get(EMOTES_LIST_URL, false);
+			if (emotes_urls.length < 150) { continue; }
+			if (emotes_urls == "ERROR") { return; }
+			if (emotes_urls.length < 150) { return; }
+			var tmp = emotes_urls.split("\n");
 			for (var i = 0; i < tmp.length; i++)
 			{
 				tmp[i] = EMOTES_URL + tmp[i];
@@ -181,11 +181,13 @@
 		}
 	}
 
-	async function Get(url)
+	async function Get(url, cache)
 	{
 		try
 		{
-			var response = await fetch(url);
+			var response = "";
+			if (cache) { response = await fetch(url); }
+			else { response = await fetch(url, {cache: "no-cache"}); }
 			var text = await response.text();
 			return text;
 		}
