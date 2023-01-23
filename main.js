@@ -165,7 +165,7 @@
 		var EMOTES_URL = "https://s1ye.github.io/GGExtraEmotes/emotes/";
 		var promise = await new Promise(function(resolve, reject)
 		{
-			function InnerGetEmotesUrls()
+			async function InnerGetEmotesUrls()
 			{
 				try
 				{
