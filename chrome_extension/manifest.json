@@ -1,0 +1,37 @@
+{
+	"name": "GGExtraEmotes",
+	"description": "Добавляет более 50 эмодзи для goodgame.ru",
+	"version": "1.0.0",
+	"manifest_version": 3,
+	"permissions":
+	[
+		"webRequest"
+	],
+	"externally_connectable":
+	{
+    	"matches": ["<all_urls>"]
+	},
+	"content_scripts":
+	[
+		{
+			"matches": ["*://goodgame.ru/channel/*"],
+			"js": ["js/inject.js"],
+			"css": ["css/inner.css"],
+			"run_at": "document_start"
+		}
+	],
+	"web_accessible_resources":
+	[
+		{
+			"matches": ["<all_urls>"],
+			"resources":
+			[
+				"js/injected.js"
+			]
+		}
+	],
+	"action":
+	{
+		"default_title": "Добавляет более 50 эмодзи для goodgame.ru"
+	}
+}
