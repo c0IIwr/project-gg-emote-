@@ -163,22 +163,34 @@
 	{
 		var EMOTES_LIST_URL = "https://s1ye.github.io/GGExtraEmotes/list.txt";
 		var EMOTES_URL = "https://s1ye.github.io/GGExtraEmotes/emotes/";
-		while(true)
+		var promise = await new Promise(function(resolve, reject)
 		{
-			var emotes_urls = await Get(EMOTES_LIST_URL, false);
-			if (emotes_urls.length < 150) { continue; }
-			if (emotes_urls == "ERROR") { return; }
-			if (emotes_urls.length < 150) { return; }
-			var tmp = emotes_urls.split("\n");
-			for (var i = 0; i < tmp.length; i++)
+			function InnerGetEmotesUrls()
 			{
-				tmp[i] = EMOTES_URL + tmp[i];
-				tmp[i] = Replace(tmp[i], "\n", "");
-				tmp[i] = Replace(tmp[i], "\r", "");
-				tmp[i] = Replace(tmp[i], "\t", "");
+				try
+				{
+					console.log("[GGExtraEmotes] Запрос списка эмодзи, url = " + EMOTES_LIST_URL)
+					var emotes_urls = await Get(EMOTES_LIST_URL, false);
+
+					if (emotes_urls.length < 150) { return setTimeout(InnerGetEmotesUrls, 500); }
+					if (emotes_urls == "ERROR") { return setTimeout(InnerGetEmotesUrls, 500); }
+					if (emotes_urls.length < 150) { return setTimeout(InnerGetEmotesUrls, 500); }
+
+					var tmp = emotes_urls.split("\n");
+					for (var i = 0; i < tmp.length; i++)
+					{
+						tmp[i] = EMOTES_URL + tmp[i];
+						tmp[i] = Replace(tmp[i], "\n", "");
+						tmp[i] = Replace(tmp[i], "\r", "");
+						tmp[i] = Replace(tmp[i], "\t", "");
+					}
+					resolve(tmp);
+				}
+				catch(e) { }
 			}
-			return tmp;
-		}
+			InnerGetEmotesUrls();
+		});
+		return promise;
 	}
 
 	async function Get(url, cache)
