@@ -163,7 +163,7 @@
 	{
 		var EMOTES_LIST_URL = "https://s1ye.github.io/GGExtraEmotes/list.txt";
 		var EMOTES_URL = "https://s1ye.github.io/GGExtraEmotes/emotes/";
-		wihle(true)
+		while(true)
 		{
 			var emotes_list = await Get(EMOTES_LIST_URL);
 			if (emotes_list.length < 150) { continue; }
