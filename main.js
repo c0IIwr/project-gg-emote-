@@ -67,10 +67,10 @@
 					msg = Replace(msg, "\n", "");
 					msg = Replace(msg, "\r", "");
 					msg = Replace(msg, "\t", "");
-					for (var i = 0; i < ggextraemotes_urls.length; i++)
+					for (var i = 0; i < window.extraemotes_urls.length; i++)
 					{
-						var replace = '<img class="ggextraemote_in_input" src="' + ggextraemotes_urls[i] + '">';
-						msg = Replace(msg, replace, ' ' + ggextraemotes_urls[i] + ' ');
+						var replace = '<img class="ggextraemote_in_input" src="' + window.extraemotes_urls[i] + '">';
+						msg = Replace(msg, replace, ' ' + window.extraemotes_urls[i] + ' ');
 					}
 					var emotes = msg.split("<divforemote");
 					for (var i = 1; i < emotes.length; i++)
