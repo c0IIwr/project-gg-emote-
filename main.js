@@ -1,14 +1,9 @@
 (async () =>
 {
 	window.extraemotes_urls = await GetEmotesUrls();
-	Main();
-
-	async function Main()
-	{
-		AsyncAddNickClickEvent();
-		AsyncAddCustomInput();
-		AsyncAddEmojis();
-	}
+	AsyncAddNickClickEvent();
+	AsyncAddCustomInput();
+	AsyncAddEmojis();
 
 	async function AsyncAddNickClickEvent()
 	{
@@ -169,7 +164,6 @@
 			{
 				try
 				{
-					console.log("[GGExtraEmotes] Запрос списка эмодзи, url = " + EMOTES_LIST_URL)
 					var emotes_urls = await Get(EMOTES_LIST_URL, false);
 
 					if (emotes_urls.length < 150) { return setTimeout(InnerGetEmotesUrls, 500); }
