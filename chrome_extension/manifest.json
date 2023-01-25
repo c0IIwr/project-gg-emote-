@@ -30,8 +30,14 @@
 			]
 		}
 	],
+	"icons":
+	{
+		"64": "img/icon_64x64.png",
+		"32": "img/icon_32x32.png"
+	},
 	"action":
 	{
-		"default_title": "Добавляет более 50 эмодзи для goodgame.ru"
+		"default_title": "Добавляет более 50 эмодзи для goodgame.ru",
+		"default_icon": "img/icon_32x32.png"
 	}
 }
