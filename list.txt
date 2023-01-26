@@ -6,8 +6,8 @@ ChadKachnulo.gif
 BANGER.gif
 wideVIBE.gif
 peepoDJ.gif
-Listening.gif
 muted.gif
+Listening.gif
 Chiller.gif
 YourBunnyDance.gif
 niatepDance.gif
@@ -32,6 +32,7 @@ D.png
 NotLikeThis.png
 WutFace.png
 Em.png
+Durka.png
 maaaaan.png
 Kreygasm.png
 PogU.png
