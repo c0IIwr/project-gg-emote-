@@ -1,5 +1,12 @@
 (async () =>
 {
+	document.addEventListener('copy', function(e)
+	{
+		var text = window.getSelection().toString();
+		e.clipboardData.setData('text/plain', text);
+		e.preventDefault();
+	});
+
 	window.extraemotes_urls = await GetEmotesUrls();
 	InfinityAddNickClickEvent();
 	InfinityAddCustomInput();
@@ -25,8 +32,8 @@
 
 	async function AddNickClickEvent()
 	{
-		await WaitElementByXPath('//div[@class="tse-content"]//chat-user');
-		var chat_section = await WaitElementByXPath('//div[@class="tse-content"]');
+		await GetElementByXPath('//div[@class="tse-content"]//chat-user');
+		var chat_section = await GetElementByXPath('//div[@class="tse-content"]');
 		var chat_users = chat_section.getElementsByTagName("chat-user");
 		for (var i = 0; i < chat_users.length; i++)
 		{
@@ -44,14 +51,29 @@
 	async function AddCustomInput()
 	{
 		if (document.getElementById("ggextraemotes_msg_input")) { return; }
-		var text_block = await WaitElementByXPath('//div[@class="chat-control-block"]//div[@class="text-block ng-scope"]');
-		var textarea = await WaitElementByXPath('//div[@class="chat-control-block"]//div[@class="textarea"]');
+		var text_block = await GetElementByXPath('//div[@class="chat-control-block"]//div[@class="text-block ng-scope"]');
+		var textarea = await GetElementByXPath('//div[@class="chat-control-block"]//div[@class="textarea"]');
 		textarea.style = "display: none";
 		var ggextraemotes_msg_input = document.createElement("div");
 		ggextraemotes_msg_input.id = "ggextraemotes_msg_input";
 		ggextraemotes_msg_input.className = "textarea";
 		ggextraemotes_msg_input.setAttribute("contenteditable", true);
 		ggextraemotes_msg_input.setAttribute("placeholder", "Написать сообщение...");
+
+		/*ggextraemotes_msg_input.onpaste = async function(event)
+		{
+			//event.preventDefault();
+			var clipboard_data = (event.clipboardData || window.clipboardData);
+			const clipboardItems = clipboard_data.items;
+		    for (const clipboardItem of clipboardItems)
+		    {
+		    	console.log(clipboardItem);
+		    }
+			clipboard_data.clearData('text/plain');
+			clipboard_data.clearData('text/html');
+			//var text = clipboard_data.getData('text');
+			//return false;
+		}*/
 		ggextraemotes_msg_input.onkeyup = function(event)
 		{
 			if (event.keyCode != 13) { return; }
@@ -59,7 +81,7 @@
 			msg = Replace(msg, "<div>", "");
 			msg = Replace(msg, "</div>", "");
 			msg = Replace(msg, "<br>", "");
-			msg = Replace(msg, "&nbsp;", "");
+			msg = Replace(msg, "&nbsp;", " ");
 			msg = Replace(msg, "\n", "");
 			msg = Replace(msg, "\r", "");
 			msg = Replace(msg, "\t", "");
@@ -82,6 +104,7 @@
 					msg = Replace(msg, "<divforemote" + inner_emote + "</divforemote>", "");
 				}
 			}
+			console.log("Отправлено: '" + msg + "'");
 			textarea.innerText = msg;
 			var event = new KeyboardEvent("keypress",
 			{
@@ -112,7 +135,7 @@
 
 	async function AddEmojis()
 	{
-		var smile_list = await WaitElementByXPath('//*[@id="smiles"]//div[@class="smile-list"]');
+		var smile_list = await GetElementByXPath('//*[@id="smiles"]//div[@class="smile-list"]');
 		if (smile_list.getElementsByClassName("ggextraemote")[0]) { return; }
 		for (var i = 0; i < window.extraemotes_urls.length; i++)
 		{
@@ -128,7 +151,7 @@
 		}
 	}
 
-	async function WaitElementByXPath(xpath)
+	async function GetElementByXPath(xpath)
 	{
 		return await new Promise(function(resolve, reject)
 		{
@@ -146,7 +169,7 @@
 	{
 		var EMOTES_LIST_URL = "https://s1ye.github.io/GGExtraEmotes/list.txt";
 		var EMOTES_URL = "https://s1ye.github.io/GGExtraEmotes/emotes/";
-		return await new Promise(function(resolve, reject)
+		return await new Promise(async function(resolve, reject)
 		{
 			async function InnerGetEmotesUrls()
 			{
@@ -155,7 +178,6 @@
 					var emotes_urls = await Get(EMOTES_LIST_URL, false);
 					if (emotes_urls.length < 150) { return setTimeout(InnerGetEmotesUrls, 500); }
 					if (emotes_urls == "ERROR") { return setTimeout(InnerGetEmotesUrls, 500); }
-					if (emotes_urls.length < 150) { return setTimeout(InnerGetEmotesUrls, 500); }
 					var tmp = emotes_urls.split("\n");
 					for (var i = 0; i < tmp.length; i++)
 					{
@@ -168,7 +190,7 @@
 				}
 				catch(e) { }
 			}
-			InnerGetEmotesUrls();
+			await InnerGetEmotesUrls();
 		});
 	}
 
