@@ -59,21 +59,6 @@
 		ggextraemotes_msg_input.className = "textarea";
 		ggextraemotes_msg_input.setAttribute("contenteditable", true);
 		ggextraemotes_msg_input.setAttribute("placeholder", "Написать сообщение...");
-
-		/*ggextraemotes_msg_input.onpaste = async function(event)
-		{
-			//event.preventDefault();
-			var clipboard_data = (event.clipboardData || window.clipboardData);
-			const clipboardItems = clipboard_data.items;
-		    for (const clipboardItem of clipboardItems)
-		    {
-		    	console.log(clipboardItem);
-		    }
-			clipboard_data.clearData('text/plain');
-			clipboard_data.clearData('text/html');
-			//var text = clipboard_data.getData('text');
-			//return false;
-		}*/
 		ggextraemotes_msg_input.onkeyup = function(event)
 		{
 			if (event.keyCode != 13) { return; }
