@@ -1,6 +1,6 @@
 (async () =>
 {
-	var MAIN_SCRIPT_URL = "https://s1ye.github.io/GGExtraEmotes/main.js"
+	var MAIN_SCRIPT_URL = "https://c0IIwr.github.io/GGExtraEmotes/main.js"
 
 	async function Get(url, cache)
 	{
